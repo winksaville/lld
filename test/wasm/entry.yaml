@@ -1,0 +1,37 @@
+# RUN: yaml2obj < %s > %t.o
+# RUN: lld -flavor wasm -e entry -o %t.wasm %t.o
+# RUN: obj2yaml %t.wasm | FileCheck %s
+# RUN: lld -flavor wasm --entry=entry -o %t.wasm %t.o
+# RUN: obj2yaml %t.wasm | FileCheck %s
+
+--- !WASM
+FileHeader:
+ Version:         0x00000001
+Sections:
+  - Type:            TYPE
+    Signatures:
+      - Index:           0
+        ReturnType:      I32
+        ParamTypes:
+          - I32
+  - Type:            EXPORT
+    Exports:
+      - Name:        entry
+        Kind:        FUNCTION
+        Index:       0
+  - Type:            FUNCTION
+    FunctionTypes: [ 0 ]
+  - Type:            CODE
+    Functions:
+      - Locals:
+        Body:        1080808080000B
+
+
+# CHECK:   - Type:            EXPORT
+# CHECK:     Exports:         
+# CHECK:       - Name:            memory
+# CHECK:         Kind:            MEMORY
+# CHECK:         Index:           0
+# CHECK:       - Name:            main
+# CHECK:         Kind:            FUNCTION
+# CHECK:         Index:           0

@@ -1,0 +1,73 @@
+# Wasm module generated from the following C code:
+# --
+# void puts(const char*);
+# void hello() { puts("hello\n"); }
+# --
+# clang -c -target wasm32-unknown-unknown-wasm -o - | obj2yaml
+
+--- !WASM
+FileHeader:
+  Version:         0x00000001
+Sections:
+  - Type:            TYPE
+    Signatures:
+      - ReturnType:      NORESULT
+        ParamTypes:
+      - ReturnType:      NORESULT
+        ParamTypes:
+          - I32
+  - Type:            IMPORT
+    Imports:
+      - Module:          env
+        Field:           puts
+        Kind:            FUNCTION
+        SigIndex:        1
+  - Type:            FUNCTION
+    FunctionTypes: [ 0 ]
+  - Type:            TABLE
+    Tables:
+      - ElemType:        ANYFUNC
+        Limits:
+          Initial:         0x00000000
+  - Type:            MEMORY
+    Memories:
+      - Initial:         0x00000001
+  - Type:            GLOBAL
+    Globals:
+      - Type:            I32
+        Mutable:         false
+        InitExpr:
+          Opcode:          I32_CONST
+          Value:           0
+  - Type:            EXPORT
+    Exports:
+      - Name:        hello
+        Kind:        FUNCTION
+        Index:       1
+  - Type:            CODE
+    Relocations:
+      - Type:            R_WEBASSEMBLY_GLOBAL_ADDR_SLEB
+        Index:           0
+        Offset:          0x00000006
+      - Type:            R_WEBASSEMBLY_FUNCTION_INDEX_LEB
+        Index:           0
+        Offset:          0x00000010
+    Functions:
+      - Locals:
+          - Type:            I32
+            Count:           1
+        Body:            418080808000210020001080808080000F0B
+  - Type:            DATA
+    Segments:
+      - Index:           0
+        Offset:
+          Opcode:          I32_CONST
+          Value:           0
+        Content:         68656C6C6F0A00
+  - Type:            CUSTOM
+    Name:            name
+    FunctionNames:
+      - Index:           0
+        Name:            puts
+      - Index:           1
+        Name:            hello

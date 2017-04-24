@@ -1,0 +1,30 @@
+--- !WASM
+FileHeader:
+  Version:         0x00000001
+Sections:
+  - Type:            TYPE
+    Signatures:
+      - ReturnType:      I32
+        ParamTypes:
+          - F32
+  - Type:            FUNCTION
+    FunctionTypes: [ 0 ]
+  - Type:            EXPORT
+    Exports:
+      - Name:        ret32
+        Kind:        FUNCTION
+        Index:       0
+  - Type:            CODE
+    Relocations:
+      - Type: R_WEBASSEMBLY_FUNCTION_INDEX_LEB
+        Offset: 0x000004
+        Index: 0
+        Addend: 0
+    Functions:
+      - Locals:
+        Body:        4180808080000B
+  - Type:            CUSTOM
+    Name:            name
+    FunctionNames:
+      - Index:           0
+        Name:            ret32

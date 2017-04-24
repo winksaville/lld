@@ -1,0 +1,70 @@
+# RUN: yaml2obj < %p/Inputs/ret32.yaml > %t.ret32.o
+# RUN: yaml2obj < %s > %t.o
+# RUN: lld -flavor wasm -o %t.wasm %t.ret32.o %t.o
+# RUN: obj2yaml %t.wasm | FileCheck %s
+
+--- !WASM
+FileHeader:
+ Version:         0x00000001
+Sections:
+ - Type:            TYPE
+   Signatures:
+     - Index:           0
+       ReturnType:      I32
+       ParamTypes:
+         - I32
+     - Index:           1
+       ReturnType:      I64
+       ParamTypes:
+         - I64
+ - Type:            IMPORT
+   Imports:
+     - Module:          env
+       Field:           ret32
+       Kind:            FUNCTION
+       SigIndex:        1
+ - Type:            FUNCTION
+   FunctionTypes: [ 1 ]
+ - Type:            EXPORT
+   Exports:
+     - Name:        _start
+       Kind:        FUNCTION
+       Index:       1
+ - Type:            CODE
+   Functions:
+     - Locals:
+       Body:        430100803F0B
+ - Type:            CUSTOM
+   Name:            name
+   FunctionNames:
+    - Index:           1
+      Name:            _start
+
+# CHECK: Sections:
+# CHECK:  - Type:            TYPE
+# CHECK-NEXT:    Signatures:
+# CHECK-NEXT:      - Index:           0
+# CHECK-NEXT:        ReturnType:      I32
+# CHECK-NEXT:        ParamTypes:
+# CHECK-NEXT:          - F32
+# CHECK-NEXT:      - Index:           1
+# CHECK-NEXT:        ReturnType:      I32
+# CHECK-NEXT:        ParamTypes:
+# CHECK-NEXT:          - I32
+# CHECK-NEXT:      - Index:           2
+# CHECK-NEXT:        ReturnType:      I64
+# CHECK-NEXT:        ParamTypes:
+# CHECK-NEXT:          - I64
+# CHECK:  - Type:            CODE
+# CHECK-NEXT:    Functions:
+# CHECK-NEXT:      - Locals:
+# CHECK-NEXT:        Body:            4180808080000B
+# CHECK-NEXT:      - Locals:
+# CHECK-NEXT:        Body:            430100803F0B
+# CHECK: - Type:            CUSTOM
+# CHECK-NEXT:     Name:            name
+# CHECK-NEXT:     FunctionNames:
+# CHECK-NEXT:       - Index:           0
+# CHECK-NEXT:         Name:            ret32
+# CHECK-NEXT:       - Index:           1
+# CHECK-NEXT:         Name:            _start
